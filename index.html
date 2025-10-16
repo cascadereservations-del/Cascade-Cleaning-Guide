@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Cascade Hideaway — Hotel-Level Laundry & Cleaning Guide with dedicated Dashboard and separate detailed protocol tabs. (v18.0 - Final Branding/Security Note)" />
+  <meta name="description" content="Cascade Hideaway — Hotel-Level Laundry & Cleaning Guide with dedicated Dashboard and separate detailed protocol tabs. (v20.0 - Final Footer Uniformity)" />
   <title>Cascade Hideaway | Hotel-Level Laundry & Cleaning</title>
 
   <!-- Fonts -->
@@ -157,14 +157,16 @@
         margin-bottom: 2px;
     }
 
-    /* --- PIRACY NOTE STYLING --- */
+    /* --- PIRACY NOTE STYLING V19.0 --- */
     .piracy-note {
-      color: var(--danger);
-      font-weight: 600;
+      color: var(--muted); /* Changed from --danger to --muted for uniformity */
+      font-weight: 400; /* Removed bolding */
       font-size: 0.9rem;
-      padding-top: 10px;
-      margin-top: 10px;
-      border-top: 1px dashed var(--line);
+      padding-bottom: 8px;
+    }
+    .piracy-note strong {
+      color: var(--muted); /* Inherit muted color for bold text */
+      font-weight: 600; /* Retain some weight for proprietary text */
     }
 
     /* FOOTER */
@@ -616,15 +618,12 @@
     </section>
   </div>
   
-  <!-- PIRACY NOTE integrated into footer space -->
-  <div style="max-width: 800px; margin: 20px auto 10px; text-align: center;">
-    <p class="piracy-note">
-      <i class="fas fa-lock"></i> **This guide is the proprietary cleaning protocol of CASCADE HIDEAWAY.** Unauthorized reproduction or distribution is prohibited.
-    </p>
-  </div>
-
   <footer class="site">
-    <p>Version 18.0. Last Reviewed: Oct 2025 (Final Branding/Security Note)</p>
+    <p class="piracy-note">
+      <i class="fas fa-lock" style="font-size: 0.8rem; margin-right: 4px; color: var(--muted);"></i> 
+      <strong style="font-weight: 600;">This guide is the proprietary cleaning protocol of CASCADE HIDEAWAY.</strong> Unauthorized reproduction or distribution is prohibited.
+    </p>
+    <p style="margin: 0; padding: 0;">Version 18.0. Last Reviewed: Oct 2025 (Final Branding/Security Note)</p>
     © <span id="year"></span> Cascade Hideaway. All rights reserved.
   </footer>
 
