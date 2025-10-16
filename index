@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Cascade Hideaway — Hotel-Level Laundry & Cleaning Guide with dedicated Dashboard and separate detailed protocol tabs. (v18.0 - Final Branding/Security Note)" />
+  <title>Cascade Hideaway | Hotel-Level Laundry & Cleaning</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLMDJc/E00L+E+E9A/EwJ5K5Z+D9A/B5S8E8Vz5G5VwE5Z" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <style>
+    :root{ 
+      --bg:#f7faf9; --paper:#ffffff; --ink:#0e1a18; --muted:#637270; 
+      --brand:#0e7770; --sand:#e8dccb; --accent:#18a15d; --danger:#dc2626; 
+      --line:#e7eceb; --radius:20px; --shadow:0 10px 40px rgba(0,0,0,.08); 
+      --input-bg: #f3f4f6;
+    }
+    [data-theme="dark"]{ 
+      --bg:#0b1320; --paper:#0f172a; --ink:#e8f0ef; --muted:#a2b3b0; 
+      --line:#1f2a37; --shadow:0 12px 44px rgba(0,0,0,.4); 
+      --input-bg: #1f2a37;
+    } 
+    html,body{height:100%}
+    body{margin:0;font-family:"Plus Jakarta Sans",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.8;scroll-behavior:smooth}
+    .wrap{max-width:1160px;margin:0 auto;padding:48px 24px}
+
+    /* HERO */
+    header.hero{position:relative;text-align:center;border-bottom-left-radius:30px;border-bottom-right-radius:30px;background:linear-gradient(135deg,#e8dccb,#d2ece9 55%,#ecfaf7);padding:80px 24px 64px;box-shadow:var(--shadow)}
+    [data-theme="dark"] header.hero{background:linear-gradient(135deg,#1f2a37,#141e30 55%,#0b1320);}
+    .logo{font-size:3rem}
+    h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,1.4rem+3vw,3rem);margin:.4em 0 .2em}
+    .subtitle{color:var(--muted);max-width:820px;margin:0 auto 1.4em}
+    
+    /* BUTTONS */
+    .btn{appearance:none;border:1px solid rgba(14,165,163,.28);background:#fff;color:#065f46;border-radius:999px;padding:.8rem 1.2rem;font-weight:700;cursor:pointer;transition:all .25s ease;display:inline-flex;align-items:center;gap:.5rem}
+    .btn:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(14,165,163,.18)}
+    .btn-icon{font-size:1.1rem;width:28px;height:28px;display:flex;align-items:center;justify-content:center;transition:transform .3s ease;}
+    .btn.toggle-open .btn-icon{transform:rotate(180deg);}
+
+    /* DASHBOARD - Now used exclusively for the landing tab */
+    .dashboard{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));max-width:1080px;margin:12px auto 8px;padding:0 0;} 
+    .card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;text-align:center;transition:transform .25s ease, box-shadow .25s ease;cursor:pointer}
+    .card:hover{transform:translateY(-4px);box-shadow:0 16px 38px rgba(4,28,26,.12)}
+    .card h3{margin:.1em 0 .35em;font-size:1.18rem}
+    .card p{color:var(--muted);min-height:56px}
+    .card .go{display:inline-flex;align-items:center;gap:.4rem;margin-top:8px;font-weight:700;color:#065f46}
+    .card .icon-container{font-size:2rem;width:48px;height:48px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:8px;background:rgba(14,119,112,.1);border-radius:12px;}
+    
+    /* TABS */
+    .tabbar{position:sticky;top:8px;z-index:30;backdrop-filter:blur(8px);display:flex;gap:10px;overflow:auto;padding:8px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.85);max-width:1080px;margin:16px auto}
+    [data-theme="dark"] .tabbar{background:rgba(15,23,42,.55)}
+    .tab{white-space:nowrap;padding:.65rem 1rem;border-radius:999px;border:1px solid transparent;font-weight:700;color:var(--ink);background:transparent;cursor:pointer;display:flex;align-items:center;gap:.45rem}
+    .tab[aria-selected="true"]{background:linear-gradient(180deg,#fff,#fbfefc);border-color:rgba(14,165,163,.35);box-shadow:0 8px 18px rgba(14,165,163,.12);color:var(--brand)}
+    [data-theme="dark"] .tab[aria-selected="true"]{background:linear-gradient(180deg,#1f2a37,#141e30);border-color:rgba(14,165,163,.35);}
+
+    /* PANELS */
+    .panel-wrap{max-width:1080px;margin:0 auto}
+    section.panel{display:none;margin-top:12px;padding:24px}
+    section.panel.active{display:block}
+    section.panel > header h2{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,1rem+2vw,2.2rem);margin:.2em 0 .2em;text-align:center}
+    section.panel > header p{color:var(--muted);text-align:center;max-width:72ch;margin:0 auto}
+
+    /* BLOCKS */
+    .blocks{display:grid;gap:20px;margin-top:16px}
+    @media (min-width:860px){ .blocks.two{grid-template-columns:1fr 1fr} .blocks.three{grid-template-columns:repeat(3,1fr)} }
+    .block{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}
+    .block h3{margin:.25em 0 .5em;font-size:1.1rem}
+    .sub{color:var(--muted)}
+
+    /* --- SEARCH LINKS LAYOUT V7.0 --- */
+    .link-list{list-style:none; padding:0; margin-top: 10px;}
+    .link-list li{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-bottom:12px;
+      padding: 6px 0;
+      border-bottom: 1px dashed var(--line);
+      line-height:1.4
+    }
+    .link-list li:last-child{border-bottom: none; margin-bottom: 0;}
+    .link-list a{color:var(--brand);text-decoration:none;font-weight:600;display:inline-flex; align-items:center; gap:4px; font-size:0.95rem; padding: 2px 6px; border-radius: 6px; transition: background 0.2s;}
+    .link-list a:hover{background: rgba(14,119,112,.1); text-decoration: none;}
+    .link-list strong{flex-basis: 40%;}
+    .link-list .link-group{flex-grow: 1; display: flex; flex-wrap: wrap; gap: 8px;}
+    
+    /* SEARCH INPUT */
+    .search-input{width:100%;padding:10px 16px;margin-bottom:16px;border-radius:10px;border:1px solid var(--line);background:var(--input-bg);color:var(--ink);font-size:1rem;outline:none;}
+    .search-input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(14,119,112,.2)}
+    
+    /* CALCULATOR STYLES */
+    .calc-input-group{margin-bottom:12px;display:flex;gap:10px;align-items:center;}
+    .calc-input-group label{font-weight:600;white-space:nowrap;color:var(--ink);}
+    .calc-input-group input, .calc-input-group select {width:100px;padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--input-bg);color:var(--ink);font-size:1rem;text-align:center;}
+    
+    .calc-result{background:linear-gradient(90deg, #ecfdf5, #f0fff4);border:2px solid #34d399;padding:12px;border-radius:12px;margin-top:16px;}
+    [data-theme="dark"] .calc-result{background:linear-gradient(90deg, rgba(24,161,93,.2), rgba(24,161,93,.1));border-color:#10b981;}
+    
+    /* --- DOSE LIST LAYOUT V7.0 --- */
+    .dose-list{list-style: none; padding: 0; margin: 0;}
+    .dose-list li{
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      padding: 6px 0; 
+      border-bottom: 1px dotted var(--line);
+    }
+    .dose-list li:last-child{border-bottom: none;}
+    .dose-list .label{font-weight: 600; display: flex; align-items: center; gap: 6px;}
+    .dose-list .value{font-weight: 700; font-size: 1.1rem; color: var(--brand);}
+    .dose-list .value.grams{color: var(--ink); opacity: 0.8;}
+    /* ------------------------------------------- */
+
+    /* CALLOUTS */
+    .call{border-radius:14px;padding:12px 14px;margin:10px 0}
+    .mainuse{border-left:4px solid var(--brand);background:#ecfeff}
+    [data-theme="dark"] .mainuse{background:rgba(14,119,112,.2);}
+    .warn{border-left:4px solid #f59e0b;background:#fff7ed}
+    [data-theme="dark"] .warn{background:rgba(245,158,11,.2);}
+    .danger{border-left:4px solid var(--danger);background:#fef2f2}
+    [data-theme="dark"] .danger{background:rgba(220,38,38,.2);}
+    
+    /* --- PRO TIP (Greyscale V5.0) --- */
+    .protip{
+      border-left:2px solid var(--line); 
+      box-shadow:none; 
+    }
+    [data-theme="light"] .protip{
+      background:#f7f7f7; 
+    } 
+    [data-theme="dark"] .protip{
+      background:rgba(255,255,255,.05); 
+    }
+
+    /* COLLAPSE */
+    .reveal{max-height:0;overflow:hidden;transition:max-height .5s ease;padding:0 12px;}
+    .reveal.open{max-height:1400px;padding:10px 12px 0;} 
+    
+    /* NEW: Clean list style for text clarity */
+    .minimal-list {
+        list-style: none;
+        padding: 0;
+        margin-top: 5px;
+        margin-bottom: 10px;
+    }
+    .minimal-list li {
+        margin-bottom: 8px;
+        line-height: 1.4;
+    }
+    .minimal-list li strong {
+        color: var(--brand); /* Highlight the category name */
+        font-weight: 700;
+        display: block;
+        margin-bottom: 2px;
+    }
+
+    /* --- PIRACY NOTE STYLING --- */
+    .piracy-note {
+      color: var(--danger);
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding-top: 10px;
+      margin-top: 10px;
+      border-top: 1px dashed var(--line);
+    }
+
+    /* FOOTER */
+    footer.site{margin:44px 0 24px;padding:18px;text-align:center;color:var(--muted);border-top:1px solid var(--line);font-size:.9rem}
+    
+    /* LOCAL SOURCING DETAILS CONTAINER */
+    .sourcing-detail {
+        margin-top: 20px;
+        padding-top: 15px;
+        border-top: 1px solid var(--line);
+    }
+    .sourcing-detail h4 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        font-size: 1rem;
+        color: var(--brand);
+        font-weight: 700;
+    }
+    .sourcing-detail p {
+      margin-top: 8px;
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="logo">🌿</div>
+    <div class="kicker">CASCADE HIDEAWAY</div>
+    <h1>Hotel‑Level Laundry & Cleaning</h1>
+    <p class="subtitle">A complete guide for consistent, professional results. Use the tabs or cards below to navigate the sections.</p>
+    <button class="btn" id="themeToggle"><i class="fas fa-moon"></i> Toggle Theme</button>
+  </header>
+
+  <!-- STICKY TABBAR: Added new Dashboard tab (Index 0) -->
+  <nav class="tabbar" id="tabBar" role="tablist" aria-label="Guide Sections">
+    <button class="tab" role="tab" aria-selected="true" aria-controls="panel-dashboard"><i class="fas fa-home"></i> Dashboard</button>
+    <button class="tab" role="tab" aria-selected="false" aria-controls="panel-laundry"><i class="fas fa-soap"></i> Laundry</button>
+    <button class="tab" role="tab" aria-selected="false" aria-controls="panel-fabrics"><i class="fas fa-couch"></i> Sofas & Carpets</button>
+    <button class="tab" role="tab" aria-selected="false" aria-controls="panel-cleaning"><i class="fas fa-spray-can"></i> General Cleaning</button>
+    <button class="tab" role="tab" aria-selected="false" aria-controls="panel-search"><i class="fas fa-link"></i> Search & Links</button>
+  </nav>
+
+  <div class="panel-wrap">
+    
+    <!-- NEW DASHBOARD PANEL (INDEX 0) - Default Landing View -->
+    <section class="panel active" id="panel-dashboard" data-idx="0">
+      <header>
+        <h2>Welcome to the Comprehensive Home Care Protocol</h2>
+        <p>Your guide to hotel-level cleaning precision. Select a section below to get started.</p>
+      </header>
+      
+      <!-- DASHBOARD CARDS ARE NOW HERE -->
+      <section class="dashboard" aria-label="Quick Navigation">
+        <article class="card" data-target="#panel-laundry" onclick="activate(1)">
+          <div class="icon-container"><i class="fas fa-soap" style="color:#0e7770"></i></div>
+          <h3>Laundry Protocol</h3>
+          <p>Precision dosing, no-conditioner mandate, brightening, finishing, and the calculator.</p>
+          <div class="go">Open ▸</div>
+        </article>
+        <article class="card" data-target="#panel-fabrics" onclick="activate(2)">
+          <div class="icon-container"><i class="fas fa-couch" style="color:#e8dccb"></i></div>
+          <h3>Sofas & Carpets</h3>
+          <p>Spray deodorizing, stain care, ozone safety, odor control.</p>
+          <div class="go">Open ▸</div>
+        </article>
+        <article class="card" data-target="#panel-cleaning" onclick="activate(3)">
+          <div class="icon-container"><i class="fas fa-spray-can" style="color:#18a15d"></i></div>
+          <h3>General Cleaning</h3>
+          <p>Mold/yellowing prevention, degreasers, chemical safety, and drain care.</p>
+          <div class="go">Open ▸</div>
+        </article>
+        <article class="card" data-target="#panel-search" onclick="activate(4)">
+          <div class="icon-container"><i class="fas fa-link" style="color:#637270"></i></div>
+          <h3>Search & Links</h3>
+          <p>Shopping quick links, product alternatives, and reference videos.</p>
+          <div class="go">Open ▸</div>
+        </article>
+      </section>
+    </section>
+    
+    <!-- LAUNDRY PANEL (INDEX 1) -->
+    <section class="panel" id="panel-laundry" data-idx="1">
+      <header>
+        <h2>🧺 Laundry — Step‑by‑Step (Precision Protocol)</h2>
+        <p>Follow this order for consistent results. Whites are boosted with correctly dosed oxygen bleach; all loads use HE enzyme detergents with precision.</p>
+      </header>
+
+      <div class="blocks two">
+        <article class="block">
+          <h3>1️⃣ Sort & Pre‑Treat</h3>
+          <div class="call mainuse"><strong>Main use:</strong> Prevent color transfer; attack stains before heat sets them.</div>
+          <ul>
+            <li>Separate: whites / lights / darks. Wash towels separately from sheets.</li>
+            <li>Pre‑treat with enzyme spray or paste (detergent + a little water).</li>
+            <li>Inspect hems, pillowcases, corners for makeup or oil marks.</li>
+          </ul>
+          <div class="call protip">💡 <strong>Pro tip:</strong> Apply pre‑treat on the <em>back</em> of the stain and dab from the front to push soil out.</div>
+        </article>
+
+        <article class="block">
+          <h3>2️⃣ Choose Detergent (HE Enzyme)</h3>
+          <div class="call mainuse"><strong>Main use:</strong> Remove body oils/food soils efficiently with low suds.</div>
+          <ul>
+            <li><strong>Surf Professional / Surf Matic</strong> — ~2 tbsp liquid or 1–1.5 scoops powder for 7–8 kg (follow label).</li>
+            <li><strong>Powerclean HE Liquid</strong> — 25–40 mL for 7–8 kg; add an extra rinse in hard water.</li>
+            <li><strong>Ariel / Breeze (HE enzyme variants)</strong> — good alternatives if stocked; verify enzymes (protease, amylase, lipase) on label.</li>
+            <li>HE in non‑HE washers is fine — use more water if over‑sudsing.</li>
+          </ul>
+          <div class="reveal" id="det-more">
+            <p class="sub">Enzyme names to look for: <em>protease</em> (protein), <em>amylase</em> (starch), <em>lipase</em> (oils). These biological agents break down soil particles, making them key for professional cleaning.</p>
+          </div>
+          <button class="btn" data-toggle="#det-more"><span class="btn-icon"><i class="fas fa-chevron-down"></i></span> More on enzymes</button>
+        </article>
+
+        <article class="block">
+          <!-- Dosing Calculator -->
+          <h3>3️⃣ Precision Dosing <span class="sub">(Detergent & Oxy Bleach)</span></h3>
+          <div class="call warn">
+            <strong style="color: #a04000;">IMPORTANT ESTIMATION NOTE:</strong> This calculator provides an *estimated* dose based on average product density. **Always prioritize and verify dosing with the official manufacturer's label** for safety and machine warranty.
+          </div>
+          
+          <div class="calc-input-group">
+            <label for="linenWeight">Linen Weight (kg):</label>
+            <input type="number" id="linenWeight" min="1" max="10" value="7" aria-label="Enter linen weight in kilograms">
+            <span class="sub">kg</span>
+          </div>
+
+          <div class="calc-input-group">
+            <label for="soilLevel">Soil Level:</label>
+            <select id="soilLevel" aria-label="Select soil level">
+              <option value="light">Light</option>
+              <option value="standard" selected>Standard</option>
+              <option value="heavy">Heavy</option>
+            </select>
+          </div>
+
+          <button class="btn" onclick="calculateDose()" style="width:100%; justify-content:center; margin-top:10px;">
+            <i class="fas fa-calculator"></i> Calculate Dose
+          </button>
+          
+          <div class="calc-result">
+            <p style="font-weight:700; margin-bottom:8px; color:var(--ink);">Recommended Dose by Format:</p>
+            <ul class="dose-list">
+                <li>
+                    <span class="label">Liquid Detergent (mL)</span>
+                    <span class="value" id="doseResult">35 mL</span>
+                </li>
+                <li>
+                    <span class="label">Liquid Sachets (28 mL ea)</span>
+                    <span class="value" id="liquidSachetResult">1.25</span>
+                </li>
+                <li>
+                    <span class="label">Powder Equivalent (Grams)</span>
+                    <span class="value grams" id="gramResult">39 g</span>
+                </li>
+                <li>
+                    <span class="label">Powder Sachets (60g ea)</span>
+                    <span class="value" id="sachetResult">1</span>
+                </li>
+                 <li style="border-bottom: none;">
+                    <span class="label" style="color: #f59e0b;"><i class="fas fa-vial"></i> Oxy Bleach (Whites Only)</span>
+                    <strong class="value" id="oxyBleachResult" style="color: #f59e0b;">5 Caps (25 mL)</strong>
+                </li>
+            </ul>
+          </div>
+        </article>
+        
+        <!-- NO-CONDITIONER PROTOCOL -->
+        <article class="block">
+            <h3>4️⃣ The No‑Conditioner Protocol</h3>
+            <div class="call danger"><strong>CRITICAL PROTOCOL:</strong> We **ELIMINATE** the use of traditional liquid fabric conditioner.</div>
+            
+            <p class="sub" style="font-weight: 600;">Why we do not use fabric conditioner:</p>
+            <ul>
+                <li><strong>Residue & Build-up:</strong> Conditioners coat fibers with waxy residue, which builds up in the washer (tub, hoses), leading to **Biofilm and Musty Odors**—a major anti-cleaning effect.</li>
+                <li><strong>Reduced Absorbency:</strong> The waxy coating clogs fabric micro-loops, **significantly reducing the absorbency** of towels and bedding.</li>
+                <li><strong>Machine Health:</strong> Over time, the residue promotes soap scum, necessitating more frequent and harsh machine cleaning.</li>
+            </ul>
+            <div class="call mainuse">
+                <i class="fas fa-spray-can"></i> <strong>The Alternative: Laundry Finishing Spray</strong>
+                <p style="margin: 4px 0 0;">Apply a **Fabric Cologne or Laundry Finishing Spray** (e.g., *Powerclean Fabric Cologne*) after linens are dry and before folding. This delivers scent and crispness without residue.</p>
+            </div>
+        </article>
+        
+        <article class="block">
+          <h3>5️⃣ Brighten Whites (Oxygen Bleach)</h3>
+          <div class="call mainuse"><strong>Main use:</strong> Restore brightness without chlorine damage.</div>
+          <ul>
+            <li>**For Dosage:** Refer to the **Dosing Calculator (Step 3)** for the precise cap/mL recommendation based on load weight.</li>
+            <li>Soak: 1–2 tbsp per 4 L warm water, 20–30 min; wash as usual.</li>
+            <li>Boost: add the calculated dose to main wash for white towels/sheets.</li>
+            <li>Spot paste: apply 5–10 min then rinse; do not let dry on fabric.</li>
+          </ul>
+          <div class="call warn">⚠️ <strong>Safety:</strong> Zonrox OxyBleach cap is approximately 5 mL. **DO NOT USE THE ZONROX BOTTLE CAP FOR CHLORINE BLEACH DOSING**; use a dedicated measuring cup/syringe.</div>
+        </article>
+
+        <article class="block">
+          <h3>6️⃣ Temperature & Cycle</h3>
+          <ul>
+            <li>Whites: hot (60°C) • Lights: warm (40°C) • Darks: cold (30°C).</li>
+            <li>Choose normal/regular cycle for most linens; delicate for pillowcases if needed.</li>
+            <li>Spin at medium to reduce wrinkles before drying.</li>
+          </ul>
+          <div class="call protip">🌀 <strong>Pro tip:</strong> A short cool rinse at the end can reduce set‑in wrinkles on cotton. Always dry bedding immediately to prevent mildew odors.</div>
+        </article>
+      </div>
+
+      <article class="block">
+        <h3>Quick Videos</h3>
+        <p class="sub">Helpful visual guides for core products and techniques.</p>
+        <p>
+          <a href="https://www.youtube.com/watch?v=T0oKVZAmq8k" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i> Surf Matic Liquid</a> · 
+          <a href="https://www.youtube.com/watch?v=5SigMn2lBwo" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i> Surf Powder</a> · 
+          <a href="https://www.facebook.com/powercleanofficial/videos/powerclean-he-liquid-detergent-is-now-available-in-new-and-improved-sachet-packa/1413863769687020/" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook"></i> Powerclean HE</a> · 
+          <a href="https://www.youtube.com/watch?v=QsQFqZz1wHc" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i> Oxygen Bleach Tips</a>
+        </p>
+      </article>
+      
+      <!-- INSTITUTIONAL SOURCING FOR LAUNDRY -->
+      <article class="block">
+        <h3>Bulk & Institutional Sourcing Detail (Laundry Focus)</h3>
+        <div class="sourcing-detail">
+            <h4>1. Powdered Oxygen Bleach (Sodium Percarbonate)</h4>
+            <p><strong>Bulk Source:</strong> **SBS Philippines Corporation** or **Powerclean Solutions** (often cater to hotels/commercial laundry). **Online (Shopee/Lazada):** Search for "**OXYGEN BLEACH POWDER**" or "**Sodium Percarbonate 1kg**".</p>
+            <p><strong>Cheap Alternative:</strong> Hydrogen Peroxide (H₂O₂) 3% (brown bottle from drugstores). It's the liquid version of the active ingredient, but less concentrated for laundry/grout whitening.</p>
+        </div>
+        <div class="sourcing-detail">
+            <h4>2. Laundry Finishing Spray (Fabric Cologne)</h4>
+            <p><strong>Bulk Source:</strong> **Powerclean Solutions** or **SIMOY** (These companies explicitly sell in gallon format for laundry shops). **Online (Shopee/Lazada):** Search for "**Fabric Cologne Gallon**" or "**SIMOY Laundry Finishing Spray**".</p>
+            <p><strong>Cheap Alternative:</strong> Rubbing Alcohol (Isopropyl or Ethyl). A light mist of fragrant alcohol eliminates odor (disinfecting), but sacrifices the lasting, specific fragrance of a dedicated finishing spray.</p>
+        </div>
+    </article>
+    </section>
+
+    <!-- FABRICS (INDEX 2) -->
+    <section class="panel" id="panel-fabrics" data-idx="2">
+      <header>
+        <h2>🛋️ Sofas & Carpets — Odor‑Free Comfort</h2>
+        <p>Prevent first; deep‑clean only when needed to protect fabrics and indoor air.</p>
+      </header>
+      <div class="blocks two">
+        <article class="block">
+          <h3>Prevention</h3>
+          <div class="call mainuse"><strong>Main use:</strong> Keep fabrics fresh between turnovers.</div>
+          <ul>
+            <li>Vacuum weekly incl. seams/edges; use crevice & upholstery tools.</li>
+            <li>Open windows for cross‑ventilation after checkout (15–20 min).</li>
+            <li>Enforce no‑smoking/no‑pets inside the unit.</li>
+            <li>Light fabric spray only when cushions are fully dry.</li>
+          </ul>
+          <div class="call protip">🌬️ <strong>Pro tip:</strong> Run an air purifier on low during cleaning to reduce dust and odors. Replace filters monthly during peak season.</div>
+        </article>
+        <article class="block">
+          <h3>Deep Clean & Deodorizing Sprays</h3>
+          <div class="call mainuse"><strong>Main use:</strong> Neutralize organic odors using targeted, local products.</div>
+          
+          <p style="font-weight: 600; margin: 8px 0 4px;">General Methods:</p>
+          <ul>
+            <li><strong>Baking Soda Method:</strong> Sprinkle baking soda → 30–60 min dwell → vacuum thoroughly.</li>
+            <li><strong>Fabric Refreshers:</strong> Widely available sprays like **Febreze or Lysol Fabric Refresher** use cyclodextrin to trap and neutralize odors on sofas/curtains.</li>
+            <li><strong>White Vinegar Solution:</strong> A simple 1:1 **White Vinegar and Water** solution applied via fine mist is an inexpensive and highly effective neutralizer.</li>
+            <li><strong>Spills:</strong> Blot (don’t rub). Test mild detergent + water on hidden spot.</li>
+          </ul>
+
+          <div class="sourcing-detail">
+            <h4>Local Deodorizer Sourcing (Enzymatic):</h4>
+            <ul class="minimal-list">
+                <li>
+                    <strong>Product:</strong> Look for **Pawsafe** or **Wonderhome Naturals** online (Shopee/Lazada). These are the most highly-rated, strong **Enzyme Cleaners** that break down organic odors.
+                </li>
+            </ul>
+            <p><strong>Cheap Alternative:</strong> Distilled White Vinegar. Neutralizes organic odors but lacks the enzyme's ability to fully break down proteins. Spray a diluted solution (1:1 water/vinegar).</p>
+          </div>
+          <div class="call warn">⚠️ <strong>Safety:</strong> Follow device manual; never run ozone with people or pets present. Use an ozone detector to verify safe air levels upon re-entry.</div>
+        </article>
+      </div>
+    </section>
+
+    <!-- GENERAL CLEANING (INDEX 3) -->
+    <section class="panel" id="panel-cleaning" data-idx="3">
+      <header>
+        <h2>🧼 General Cleaning — Kitchen, Sinks, Drains</h2>
+        <p>Use fit‑for‑purpose cleaners, respect dwell times, and ventilate well.</p>
+      </header>
+      
+      <!-- Kitchen and Drain Side-by-Side -->
+      <div class="blocks two">
+        <article class="block">
+          <h3>Kitchen Degreaser</h3>
+          <div class="call mainuse"><strong>Main use:</strong> Cut oil/grease on stovetops, tiles, counters.</div>
+          <ul>
+            <li><strong>Mr. Muscle Kitchen Cleaner</strong>: spray → 2–3 min dwell → wipe damp → rinse.</li>
+            <li><strong>Alternative:</strong> Any kitchen‑safe degreaser labeled for food‑contact surfaces (rinse required).</li>
+          </ul>
+          <div class="call protip">🔥 <strong>Pro tip:</strong> Warm water cloth after dwell removes stubborn film faster. For heavy build-up, use a plastic scrubber.</div>
+          <p class="sub">Videos:</p>
+          <p>
+            <a href="https://www.youtube.com/watch?v=WCfxG38wQOw" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i> How‑to</a> · 
+            <a href="https://www.youtube.com/watch?v=wtdffIy6cZ0" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i> Live demo</a>
+          </p>
+        </article>
+        <article class="block">
+          <h3>Drain Care</h3>
+          <div class="call mainuse"><strong>Main use:</strong> Clear slow drains caused by hair or grease.</div>
+          <ul>
+            <li><strong>Mr. Muscle Drain Unblocker / Gel</strong>: dose → dwell → flush hot water.</li>
+            <li><strong>Alternatives:</strong> Enzyme drain cleaners (safer, slower) or mechanical (plunger/auger).</li>
+          </ul>
+          <div class="call warn">⚠️ <strong>Warning:</strong> Do not use right before/after chlorine bleach or acids. Always wear eye protection.</div>
+          <p class="sub">Videos:</p>
+          <p>
+            <a href="https://www.youtube.com/watch?v=R2v6Rov_AjE" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i> How‑to (short)</a> · 
+            <a href="https://www.youtube.com/watch?v=9sg2a3e0VnU" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i> Unclog demo</a>
+          </p>
+        </article>
+      </div>
+      
+      <!-- Yellowing and Mold Prevention (Full Width for Clarity and Balance) -->
+      <div class="blocks">
+        <article class="block">
+            <h3>🧫 Preventing Yellowing and Mold Stains</h3>
+            <div class="call warn"><strong>PHILIPPINE CONTEXT:</strong> Preventative maintenance is critical against high humidity.</div>
+            
+            <p style="font-weight: 600; margin: 8px 0 4px;">Yellowing (Plastics/Grout Protocol)</p>
+            <ul class="minimal-list">
+                <li>
+                    <strong>Restoration (Plastics):</strong> For already yellowed plastic, apply **Hydrogen Peroxide Cream (Volume 40)**, wrap in plastic, and expose to indirect sunlight (Retr0bright Method).
+                </li>
+                <li>
+                    <strong>Grout Whitening:</strong> Scrub with a paste of **powdered oxygen bleach** and hot water. For severe stains, use a 1:10 solution of **Zonrox : Water** for 5 minutes, then rinse.
+                </li>
+                <li>
+                    <strong>Prevention:</strong> Apply an industrial **Grout Sealer** to prevent mold penetration.
+                </li>
+            </ul>
+            
+            <p style="font-weight: 600; margin: 12px 0 4px;">Mold & Mildew (Hard Surfaces Protocol)</p>
+            <ul class="minimal-list">
+                <li>
+                    <strong>Elimination:</strong> Mix **1 part Zonrox to 10 parts water**. Apply to non-porous surfaces (tiles/grout), dwell for 10 minutes, then rinse *well*.
+                </li>
+                <li>
+                    <strong>Prevention:</strong> **Fix the water source first!** (Leaks/condensation). Run the **exhaust fan for 30 minutes *after* bathing** and wipe down wet walls to control moisture.
+                </li>
+            </ul>
+            
+            <div class="sourcing-detail">
+              <h4>Local Sourcing Detail (Specialty Chemicals):</h4>
+              <ul class="minimal-list">
+                  <li>
+                      <strong>Hydrogen Peroxide Cream (Volume 40):</strong> Look for brands like **Bremod** or **Natural Colorspa Developer** at local beauty supply stores, Watsons, or online. (It is typically a hair product, 12% concentration).
+                  </li>
+                  <li>
+                      <strong>Powdered Oxygen Bleach:</strong> Source pure **Sodium Percarbonate** (e.g., from **Powerclean Solutions** on Shopee/Lazada) or use an Oxi-type laundry additive. (This is the gold standard for non-corrosive whitening).
+                  </li>
+              </ul>
+              <p><strong>Cheap Alternative for Yellowing:</strong> Natural Sunlight & Time. Prolonged exposure to indirect UV light is the principle behind the chemical method, but it is slower and less reliable without the peroxide compound.</p>
+            </div>
+        </article>
+      </div>
+      
+      <article class="block">
+        <h3>Safety Primer 🧤</h3>
+        <ul>
+          <li>Read labels; never exceed doses; ensure ventilation during and after use.</li>
+          <li>Wear gloves/eye protection for strong cleaners; store sealed and upright.</li>
+          <li>Rinse surfaces before switching products. 🚫 Never mix chlorine bleach with ammonia or acids.</li>
+        </ul>
+      </article>
+    </section>
+
+    <!-- SEARCH (INDEX 4) -->
+    <section class="panel" id="panel-search" data-idx="4">
+      <header>
+        <h2>🔎 Search & Links</h2>
+        <p>Quick product searches plus brand pages and how‑to videos. Use the search bar below to filter the list instantly.</p>
+      </header>
+      
+      <!-- Live Filter Input -->
+      <input type="search" id="productSearch" class="search-input" placeholder="Start typing to filter products and links..." aria-label="Filter products and links">
+      
+      <div class="blocks two" id="searchBlocks">
+        <article class="block">
+          <h3>Detergents</h3>
+          <ul class="link-list">
+            <li data-search-term="surf professional surf matic powder liquid detergent">
+              <strong>Surf Professional / Surf Matic</strong> 
+              <span class="link-group">
+                <a href="https://shopee.ph/search?keyword=Surf%20Professional" target="_blank" rel="noopener noreferrer"><i class="fas fa-shopping-cart"></i> Shopee</a> 
+                <a href="https://www.lazada.com.ph/catalog/?q=Surf%20Professional" target="_blank" rel="noopener noreferrer"><i class="fas fa-store"></i> Lazada</a> 
+                <a href="https://www.youtube.com/watch?v=T0oKVZAmq8k" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i> Video</a>
+              </span>
+            </li>
+            <li data-search-term="powerclean he liquid detergent">
+              <strong>Powerclean HE Liquid</strong> 
+              <span class="link-group">
+                <a href="https://powerclean.com.ph/product/liquid-detergent/" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> Brand</a> 
+                <a href="https://www.facebook.com/powercleanofficial/videos/powerclean-he-liquid-detergent-is-now-available-in-new-and-improved-sachet-packa/1413863769687020/" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook"></i> Video</a>
+              </span>
+            </li>
+            <li data-search-term="ariel breeze he enzyme detergent">
+              <strong>Ariel / Breeze HE</strong> 
+              <span class="link-group">
+                <a href="https://shopee.ph/search?keyword=Ariel%20HE%20detergent" target="_blank" rel="noopener noreferrer"><i class="fas fa-shopping-cart"></i> Shopee</a> 
+                <a href="https://www.lazada.com.ph/catalog/?q=Breeze%20HE%20detergent" target="_blank" rel="noopener noreferrer"><i class="fas fa-store"></i> Lazada</a>
+              </span>
+            </li>
+            <li data-search-term="oxygen bleach zonrox oxy oxi type brightener">
+              <strong>Oxygen Bleach (Zonrox Oxy / Oxi‑type)</strong> 
+              <span class="link-group">
+                <a href="https://shopee.ph/search?keyword=Zonrox%20Oxy%20Bleach" target="_blank" rel="noopener noreferrer"><i class="fas fa-shopping-cart"></i> Shopee</a> 
+                <a href="https://www.lazada.com.ph/catalog/?q=Zonrox%20Oxy%20Bleach" target="_blank" rel="noopener noreferrer"><i class="fas fa-store"></i> Lazada</a> 
+                <a href="https://www.youtube.com/watch?v=QsQFqZz1wHc" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i> Video</a>
+              </span>
+            </li>
+          </ul>
+        </article>
+        <article class="block">
+          <h3>Cleaners</h3>
+          <ul class="link-list">
+            <li data-search-term="mr muscle kitchen cleaner degreaser">
+              <strong>Mr. Muscle Kitchen Cleaner</strong>
+              <span class="link-group">
+                <a href="https://www.youtube.com/watch?v=WCfxG38wQOw" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i> How‑to</a> 
+                <a href="https://www.youtube.com/watch?v=wtdffIy6cZ0" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i> Live demo</a>
+              </span>
+            </li>
+            <li data-search-term="mr muscle drain unblocker gel clog">
+              <strong>Mr. Muscle Drain Unblocker</strong> 
+              <span class="link-group">
+                <a href="https://www.youtube.com/watch?v=R2v6Rov_AjE" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i> How‑to</a> 
+                <a href="https://www.youtube.com/watch?v=9sg2a3e0VnU" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i> Unclog demo</a>
+              </span>
+            </li>
+            <li data-search-term="powerclean fabric cologne linen spray">
+              <strong>Powerclean Fabric Cologne</strong> 
+              <span class="link-group">
+                <a href="https://www.facebook.com/powercleanofficial/videos/fabric-cologne/626965880157461/" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook"></i> Overview</a> 
+                <a href="https://m.facebook.com/powercleanofficial/videos/freshen-up-your-fabrics-with-the-scent-of-summer-introducingpowercleans-new-fabr/792386839990038/" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook"></i> New scent</a>
+              </span>
+            </li>
+          </ul>
+        </article>
+      </div>
+      <div class="block">
+        <h3>Notes on Performance</h3>
+        <p class="sub">Ariel/Breeze HE enzyme lines are solid alternatives. Cleaning performance depends on soil level and water hardness; Surf Professional remains the default due to availability and hotel‑style brightening. Always check labels and adjust dosing. <span id="revision-date"></span></p>
+      </div>
+    </section>
+  </div>
+  
+  <!-- PIRACY NOTE integrated into footer space -->
+  <div style="max-width: 800px; margin: 20px auto 10px; text-align: center;">
+    <p class="piracy-note">
+      <i class="fas fa-lock"></i> **This guide is the proprietary cleaning protocol of CASCADE HIDEAWAY.** Unauthorized reproduction or distribution is prohibited.
+    </p>
+  </div>
+
+  <footer class="site">
+    <p>Version 18.0. Last Reviewed: Oct 2025 (Final Branding/Security Note)</p>
+    © <span id="year"></span> Cascade Hideaway. All rights reserved.
+  </footer>
+
+  <script>
+    // Constants and Utility Functions
+    const panels = [...document.querySelectorAll('section.panel')];
+    const tabs = [...document.querySelectorAll('.tab')];
+
+    function activate(idx) { 
+      tabs.forEach((t, i) => t.setAttribute('aria-selected', String(i === idx))); 
+      panels.forEach((p, i) => p.classList.toggle('active', i === idx)); 
+    }
+    
+    function currentIndex() { 
+      // Note: This function now finds the index from 0 (Dashboard) to 4 (Search)
+      return panels.findIndex(p => p.classList.contains('active')); 
+    }
+
+    // --- 1. Theme Toggle ---
+    const themeBtn = document.getElementById('themeToggle');
+    if (themeBtn) { 
+      const saved = localStorage.getItem('ch-theme'); 
+      if (saved) {
+        document.documentElement.setAttribute('data-theme', saved);
+        themeBtn.querySelector('i').className = saved === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+      } 
+      themeBtn.addEventListener('click', () => {
+        const cur = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', cur);
+        localStorage.setItem('ch-theme', cur);
+        themeBtn.querySelector('i').className = cur === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+      }); 
+    }
+
+    // --- 2. Tabs & Panels Logic ---
+    // The Dashboard cards now call activate(index) directly (Index 1-4).
+    tabs.forEach((t, i) => t.addEventListener('click', () => activate(i)));
+    document.getElementById('tabBar').addEventListener('keydown', e => {
+      const cur = currentIndex(); 
+      if (['ArrowRight', 'ArrowLeft', 'Home', 'End'].includes(e.key)) e.preventDefault(); 
+      if (e.key === 'ArrowRight') activate(Math.min(cur + 1, tabs.length - 1)); 
+      if (e.key === 'ArrowLeft') activate(Math.max(cur - 1, 0)); 
+      if (e.key === 'Home') activate(0); 
+      if (e.key === 'End') activate(tabs.length - 1);
+    });
+
+    // --- 3. Swipe between panels (mobile) ---
+    let startX = null;
+    panels.forEach(p => { 
+      p.addEventListener('touchstart', e => { 
+        startX = e.changedTouches[0].clientX; 
+      }, { passive: true }); 
+      p.addEventListener('touchend', e => { 
+        if (startX === null) return; 
+        const dx = e.changedTouches[0].clientX - startX; 
+        const th = 70; // threshold
+        const activeIdx = currentIndex();
+        if (dx < -th && activeIdx < panels.length - 1) activate(activeIdx + 1); 
+        if (dx > th && activeIdx > 0) activate(activeIdx - 1); 
+        startX = null; 
+      }, { passive: true }); 
+    });
+
+    // --- 4. Reveal toggles (Improved Icon) ---
+    document.querySelectorAll('[data-toggle]').forEach(btn => btn.addEventListener('click', () => { 
+      const el = document.querySelector(btn.getAttribute('data-toggle'));
+      const icon = btn.querySelector('.btn-icon i');
+
+      el.classList.toggle('open');
+      btn.classList.toggle('toggle-open');
+
+      if (el.classList.contains('open')) {
+        btn.textContent = 'Hide details';
+        icon.className = 'fas fa-chevron-up';
+        btn.prepend(icon.parentElement);
+      } else {
+        btn.textContent = 'More on enzymes';
+        icon.className = 'fas fa-chevron-down';
+        btn.prepend(icon.parentElement);
+      }
+    }));
+
+    // --- 5. Live Search Filter ---
+    const searchInput = document.getElementById('productSearch');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        const filter = e.target.value.toLowerCase().trim();
+        const listItems = document.querySelectorAll('#panel-search .link-list li');
+        
+        listItems.forEach(item => {
+          const textContent = item.textContent.toLowerCase();
+          const searchTerm = item.getAttribute('data-search-term');
+          
+          if (!filter || textContent.includes(filter) || (searchTerm && searchTerm.includes(filter))) {
+            item.style.display = 'flex'; // Show
+          } else {
+            item.style.display = 'none'; // Hide
+          }
+        });
+      });
+    }
+    
+    // --- 6. Detergent Dosing Calculator (Functionality) ---
+    
+    // Core Constants
+    const BASE_DOSE_PER_KG = 5;         // Base dose (mL/kg) for liquid HE detergent
+    const DETERGENT_DENSITY = 1.1;      // Density (g/mL) of liquid detergent
+    const DEFAULT_POWDER_SACHET_G = 60; // Standard powder sachet weight (g)
+    const DEFAULT_LIQUID_SACHET_ML = 28; // Standard liquid sachet volume (mL, based on 25-30mL range)
+    const OXY_BLEACH_CAP_ML = 5;        // CORRECTED Zonrox OxyBleach cap size (mL)
+    const OXY_DOSE_PER_KG = 3;          // Oxy bleach dose rate (mL/kg) for whites
+
+    // Multipliers for soil level
+    const SOIL_MULTIPLIERS = {
+      light: 0.8,
+      standard: 1.0,
+      heavy: 1.2
+    };
+
+    function calculateDose() {
+      const weightInput = document.getElementById('linenWeight');
+      const soilSelect = document.getElementById('soilLevel');
+      const doseResult = document.getElementById('doseResult');
+      const gramResult = document.getElementById('gramResult');
+      const sachetResult = document.getElementById('sachetResult');
+      const liquidSachetResult = document.getElementById('liquidSachetResult');
+      const oxyBleachResult = document.getElementById('oxyBleachResult');
+      
+      let weight = parseFloat(weightInput.value) || 0;
+      const soilLevel = soilSelect.value;
+      
+      // Enforce limits and sanitize
+      if (weight < 1) { weight = 1; weightInput.value = 1; }
+      if (weight > 10) { weight = 10; weightInput.value = 10; }
+      
+      const multiplier = SOIL_MULTIPLIERS[soilLevel] || 1.0;
+      
+      // 1. Calculate Liquid Detergent (mL)
+      let dose_mL = Math.round(weight * BASE_DOSE_PER_KG * multiplier);
+      dose_mL = Math.max(15, dose_mL); // Ensure minimum dose
+      
+      // 2. Calculate Grams (Powder/Liquid Equivalent)
+      let dose_g = Math.round(dose_mL * DETERGENT_DENSITY);
+
+      // 3. Calculate Powder Sachet Count (60g)
+      let powderSachetCount = dose_g / DEFAULT_POWDER_SACHET_G;
+      let powderSachetDisplay;
+      
+      if (powderSachetCount <= 0.3) {
+        powderSachetDisplay = '1/4';
+      } else if (powderSachetCount <= 0.65) {
+        powderSachetDisplay = '1/2';
+      } else if (powderSachetCount <= 1.3) {
+        powderSachetDisplay = '1';
+      } else if (powderSachetCount <= 1.7) {
+        powderSachetDisplay = '1.5';
+      } else {
+        powderSachetDisplay = Math.ceil(powderSachetCount);
+      }
+      
+      // 4. Calculate Liquid Sachet Count (28mL)
+      let liquidSachetCount = dose_mL / DEFAULT_LIQUID_SACHET_ML;
+      let liquidSachetDisplay;
+      if (liquidSachetCount <= 0.35) {
+        liquidSachetDisplay = '1/4';
+      } else if (liquidSachetCount <= 0.6) {
+        liquidSachetDisplay = '1/2';
+      } else if (liquidSachetCount <= 0.9) {
+        liquidSachetDisplay = '3/4';
+      } else {
+        liquidSachetDisplay = Math.ceil(liquidSachetCount);
+      }
+
+      // 5. Calculate Oxy Bleach (5mL Cap Dose)
+      let oxy_dose_mL = Math.round(weight * OXY_DOSE_PER_KG);
+      let oxy_caps = Math.max(1, Math.ceil(oxy_dose_mL / OXY_BLEACH_CAP_ML));
+      
+      let oxy_cap_display = `${oxy_caps} Cap${oxy_caps > 1 ? 's' : ''} (${oxy_caps * OXY_BLEACH_CAP_ML} mL)`;
+      
+      // Update UI
+      doseResult.textContent = `${dose_mL} mL`;
+      gramResult.textContent = `${dose_g} g`;
+      sachetResult.textContent = powderSachetDisplay;
+      liquidSachetResult.textContent = liquidSachetDisplay;
+      oxyBleachResult.textContent = oxy_cap_display;
+    }
+    
+    // Initial calculation when the page loads
+    window.onload = function() {
+      document.getElementById('year').textContent = new Date().getFullYear();
+      calculateDose(); 
+      
+      // Add event listeners for instant recalculation
+      document.getElementById('linenWeight').addEventListener('input', calculateDose);
+      document.getElementById('soilLevel').addEventListener('change', calculateDose);
+    };
+  </script>
+</body>
+</html>
